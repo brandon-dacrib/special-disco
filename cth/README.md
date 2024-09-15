@@ -2,7 +2,7 @@
 
 ## Assumptions
 * you have a current terraform binary for your [platform](https://developer.hashicorp.com/terraform/install) 1.9.5 at time of writing. 
-* you have have the created the s3 bucket and dynamodb table defined in state.tf + have needed permissions to write to them.  
+* you have have the created the s3 bucket and dynamodb table defined in state.tf + have needed permissions to write to them. Example in the `getting-started` directory. 
 
 ## Assignment Requirements:
 

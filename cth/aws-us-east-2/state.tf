@@ -4,7 +4,7 @@
         bucket = "special-disco"
         key    = "ctl/terraform.tfstate"
         region = "us-east-2"
-        dynamodb_table = "special-disco-tflock"
+        dynamodb_table = "special-disco-ctl-tflock"
         encrypt = true
       }
     }
