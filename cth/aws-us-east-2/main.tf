@@ -29,7 +29,7 @@ module "security_groups" {
     description = "Allow inbound HTTP traffic to ALB"
     vpc_id      = module.vpc.vpc_id
 
-    ingress_cidr_blocks = ["0.0.0.0/0"]  # Allow inbound traffic on port 80 from any IP address
+    ingress_cidr_blocks = ["0.0.0.0/0"] # Allow inbound traffic on port 80 from any IP address
     ingress_rules       = ["http-80-tcp"]
     egress_rules        = ["all-all"]
 
@@ -43,8 +43,8 @@ module "security_groups" {
     description = "ECS Task Security Group"
     vpc_id      = module.vpc.vpc_id
 
-    ingress_cidr_blocks = [module.vpc.cidr_block]  # Allow inbound traffic only from within the VPC
-    ingress_rules       = ["http-8000-tcp"]        # Allow traffic on port 8000 for ECS tasks
+    ingress_cidr_blocks = [module.vpc.cidr_block] # Allow inbound traffic only from within the VPC
+    ingress_rules       = ["http-8000-tcp"]       # Allow traffic on port 8000 for ECS tasks
     egress_rules        = ["all-all"]
 
     tags = {
@@ -59,20 +59,20 @@ module "ecs" {
   source  = "terraform-aws-modules/ecs/aws"
   version = "3.0.0"
 
-  cluster_name = "crisis-help-eval-ecs"  # ECS cluster name
+  cluster_name = "crisis-help-eval-ecs" # ECS cluster name
   ecs_services = {
-    service_name = "crisis-help-eval-service"  # ECS service name
+    service_name = "crisis-help-eval-service" # ECS service name
     task_definition = {
       container_name  = "crisis-help-eval-container"
-      container_image = "crccheck/hello-world"  # The Docker image for the ECS task
-      container_port  = 8000                    # The container listens on port 8000
+      container_image = "crccheck/hello-world" # The Docker image for the ECS task
+      container_port  = 8000                   # The container listens on port 8000
     }
-    desired_count = 2    # Deploy 2 tasks for high availability
-    launch_type   = "FARGATE"  # Use Fargate to run the ECS tasks
+    desired_count = 2         # Deploy 2 tasks for high availability
+    launch_type   = "FARGATE" # Use Fargate to run the ECS tasks
   }
 
-  subnet_ids         = module.vpc.private_subnets  # Run the ECS tasks in private subnets
-  security_group_ids = [module.security_groups.ecs_sg]  # Attach the ECS security group to the tasks
+  subnet_ids         = module.vpc.private_subnets      # Run the ECS tasks in private subnets
+  security_group_ids = [module.security_groups.ecs_sg] # Attach the ECS security group to the tasks
 
   tags = {
     Name = "crisis-help-eval-ecs"
@@ -85,18 +85,18 @@ module "alb" {
   source  = "terraform-aws-modules/alb/aws"
   version = "7.0.0"
 
-  name               = "crisis-help-eval-alb"  # ALB name
-  load_balancer_type = "application"  # Type of load balancer (ALB)
-  subnets            = module.vpc.public_subnets  # ALB will be deployed in public subnets
-  security_groups    = [module.security_groups.alb_sg]  # Attach the ALB security group
+  name               = "crisis-help-eval-alb"          # ALB name
+  load_balancer_type = "application"                   # Type of load balancer (ALB)
+  subnets            = module.vpc.public_subnets       # ALB will be deployed in public subnets
+  security_groups    = [module.security_groups.alb_sg] # Attach the ALB security group
 
   target_groups = {
-    name        = "crisis-help-eval-target-group"  # Target group for ECS tasks
-    port        = 80  # Forward traffic from port 80 to ECS tasks
-    target_type = "ip"  # Use IP address as the target type for ECS tasks
+    name        = "crisis-help-eval-target-group" # Target group for ECS tasks
+    port        = 80                              # Forward traffic from port 80 to ECS tasks
+    target_type = "ip"                            # Use IP address as the target type for ECS tasks
     vpc_id      = module.vpc.vpc_id
     health_check = {
-      path = "/"  # Health check for the ECS tasks
+      path = "/" # Health check for the ECS tasks
     }
   }
 
@@ -129,4 +129,4 @@ output "alb_dns" {
   description = "ALB DNS name"
   value       = module.alb.dns_name
 }
-    
+
