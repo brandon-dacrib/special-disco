@@ -23,8 +23,7 @@ module "vpc" {
 module "security_groups" {
   source  = "terraform-aws-modules/security-group/aws"
   version = "4.0.0"
-
-  alb_sg = {
+  
     name        = "crisis-help-eval-alb-sg"
     description = "Allow inbound HTTP traffic to ALB"
     vpc_id      = module.vpc.vpc_id
@@ -38,7 +37,6 @@ module "security_groups" {
     }
   }
 
-  ecs_sg = {
     name        = "crisis-help-eval-ecs-sg"
     description = "ECS Task Security Group"
     vpc_id      = module.vpc.vpc_id
@@ -50,7 +48,6 @@ module "security_groups" {
     tags = {
       Name = "crisis-help-eval-ecs-sg"
     }
-  }
 }
 
 # ECS module from terraform-aws-modules
@@ -101,11 +98,13 @@ module "alb" {
   }
 
   listeners = {
-    port     = 80
-    protocol = "HTTP"
-    default_action = {
-      type             = "forward"
-      target_group_arn = module.alb.target_groups["crisis-help-eval-target-group"].arn
+    accept-http = {
+      port     = 80
+      protocol = "HTTP"
+      default_action = {
+        type             = "forward"
+        target_group_arn = module.alb.target_groups["crisis-help-eval-target-group"].arn
+      }
     }
   }
 
