@@ -1,4 +1,4 @@
-# Check out the `working` branch if you want to test this
+# Check out the `working` branch if you want to test this locally
 # Task Overview: Run an ALB fronted service in a vpc in ECS
 
 ## Assumptions
